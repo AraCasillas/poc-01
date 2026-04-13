@@ -36,7 +36,7 @@ class AvatarIdP < Sinatra::Base
   # secret: es la clave de firma para las cookies de sesión
   use Rack::Session::Cookie,
       key: "avatar_idp_session",
-      secret: "idp_session_vaatu_secret"
+      secret: "idp_session_Im_nothing_for_you_Kyoshi_For_me_you_are_dead!_Rangi2025"
 
   # Set de configuración para Sinatra
   # :views indica dónde buscar el HTML

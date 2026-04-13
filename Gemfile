@@ -24,4 +24,5 @@ gem "jwt"
 
 #Rack-session 
 gem "rack-session"
+gem "rackup"
 
