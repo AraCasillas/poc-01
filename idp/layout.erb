@@ -9,11 +9,11 @@
 </head>
 <body>
   <header class="header">
-    <div class="logo">⚙️ Future Industries</div>
+    <div class="logo"> Future Industries</div>
     <%# Solo mostramos el nav si el usuario está autenticado %>
     <% if session[:user] %>
       <nav>
-        <span>👤 <%= session[:user] %></span>
+        <span><%= session[:user] %></span>
         <a href="/logout">Logout</a>
       </nav>
     <% end %>
@@ -28,4 +28,4 @@
     <p>© 2024 Future Industries — by AreiaNight</p>
   </footer>
 </body>
-</html>
+</html>@

@@ -1,0 +1,41 @@
+<% @title = "Future Industries — Dashboard" %>
+
+<div class="dashboard">
+
+  <div class="dashboard-header">
+    <h1>Welcome, <%= @user %>!</h1>
+    <p class="subtitle">Remember to always stay curious and keep learning!</p>
+  </div>
+
+  <%# Información de la sesión activa %>
+  <div class="session-info">
+    <h2>Active Session</h2>
+    <p><strong>User:</strong> <%= @user %></p>
+  </div>
+
+  <%# El token JWT %>
+  <div class="token-box">
+    <h3>Your session token</h3>
+    <p class="token-label">
+      Don't share your private token with anyone! 
+      It contains sensitive information about your session.
+    </p>
+    <p class="token-value"><%= @token %></p>
+  </div>
+
+  <%# Contenido ficticio del portal %>
+  <div class="portal-content">
+    <h3>Future Industries Projects</h3>
+    <ul>
+      <li>Project A: Building a sustainable city powered by renewable energy.</li>
+      <li>Project B: Developing advanced protocols for secure infrastructure.</li>
+      <li>Project C: Sato Airplane fleet — Q4 Report.</li>
+      <% if @user == "avatarKorra@futureIndustries.com" %>
+        <li> Project D: Ask Asami to be my wife</li>
+      <% end %>
+    </ul>
+  </div>
+
+  <a href="/logout" class="btn-logout">Logout</a>
+
+</div>
