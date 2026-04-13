@@ -22,7 +22,7 @@ end
 
 # Definimos el hash de usuarios y contraseñas
 USERS = {
-  "avatarKyoshi@avatar.com"  => "rangi123",
+  "avatarKyoshi@avatar.com"  => "rangiIsTheBestGirlfriend",
   "avatarKorra@avatar.com"   => "iloveAsamiSato<3",
   "avatarYangchen@avatar.com" => "yangchenRules"
 }
