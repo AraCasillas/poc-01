@@ -22,9 +22,9 @@ end
 
 # Definimos el hash de usuarios y contraseñas
 USERS = {
-  "avatarKyoshi@avatar.com"  => "rangiIsTheBestGirlfriend",
-  "avatarKorra@avatar.com"   => "iloveAsamiSato<3",
-  "avatarYangchen@avatar.com" => "yangchenRules"
+  "avatarKyoshi@futureIndustries.com"  => "rangiIsTheBestGirlfriend",
+  "avatarKorra@futureIndustries.com"   => "iloveAsamiSato<3",
+  "avatarYangchen@futureIndustries.com" => "yangchenRules"
 }
 
 # Esta es la clave para firmar los JWT

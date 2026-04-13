@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <%# El título cambia dependiendo de si @title tiene valor o no %>
+  <title><%= @title || "Future Industries Portal" %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="logo">⚙️ Future Industries</div>
+    <%# Solo mostramos el nav si el usuario está autenticado %>
+    <% if session[:user] %>
+      <nav>
+        <span>👤 <%= session[:user] %></span>
+        <a href="/logout">Logout</a>
+      </nav>
+    <% end %>
+  </header>
+
+  <main>
+    <%# Aquí es donde se inserta login.erb o dashboard.erb %>
+    <%= yield %>
+  </main>
+
+  <footer>
+    <p>© 2024 Future Industries — by AreiaNight</p>
+  </footer>
+</body>
+</html>
