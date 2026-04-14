@@ -5,6 +5,20 @@ require 'sinatra/contrib'
 require "jwt"
 require "sequel"
 require "sqlite3"
+require "json" # Para cargar el JSON con los tokens 
+
+def tokes_data #Definimos un método para cargar los datos del JSON
+
+  data = JSON.load_file(File.join(__dir__, 'token.json'))
+
+  puts "wst_secret:" + data["jwt_secret"]
+  puts "proxy_secret:" + data["secret"]
+
+  data
+
+end 
+
+PROCESS_DATA = tokes_data() #Ejecutamos el método para cargar los datos del JSON
 
 # Se crea la db
 # el __dir__ es para que se cree en la misma carpeta del proyecto
@@ -18,6 +32,7 @@ DB.create_table?(:captured_tokens) do
   String   :ip           # IP desde donde se autenticó
   String   :user_agent   # navegador de la víctima
   DateTime :captured_at  # cuándo fue capturado
+  String   :session_cookie #Captura la cookie de sesión del proxy
 end
 
 # Definimos el hash de usuarios y contraseñas
@@ -29,14 +44,14 @@ USERS = {
 
 # Esta es la clave para firmar los JWT
 # En producción esto sería una variable de entorno, nunca hardcodeado
-JWT_SECRET = "RaavaLikesFireNationLadies"
+JWT_SECRET = PROCESS_DATA["jwt_secret"] #Cargamos el JWT_SECRET desde el JSON
 
 class AvatarIdP < Sinatra::Base
   # Habilitamos sesiones HTTP para recordar al usuario autenticado
   # secret: es la clave de firma para las cookies de sesión
   use Rack::Session::Cookie,
       key: "avatar_idp_session",
-      secret: "idp_session_Im_nothing_for_you_Kyoshi_For_me_you_are_dead!_Rangi2025"
+      secret: PROCESS_DATA["secret"] #Cargamos el secret
 
   # Set de configuración para Sinatra
   # :views indica dónde buscar el HTML

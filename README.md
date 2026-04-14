@@ -10,6 +10,7 @@ Translated with DeepL.com (free version)
 
 ## Roadmap 
 - [x] Target page 
-- [x] Proxy
+- [ ] Work in the proxy to make it more "real"
 - [ ] Attacker dashboard 
-
+- [ ] Add an ignore file for the db and token 
+- [ ] Add json file with token and secret 

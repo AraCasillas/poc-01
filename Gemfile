@@ -26,7 +26,10 @@ gem "jwt"
 gem "rack-session"
 gem "rackup"
 
- # cliente HTTP — hace peticiones a otros servidores
-gem "faraday" 
+# cliente HTTP — hace peticiones a otros servidores
+gem "faraday"
+
+# Cargar variables de entorno desde un archivo .env
+gem 'dotenv', groups: [:development, :test]
 
 
