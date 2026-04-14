@@ -9,7 +9,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #0a0a0f;
+  background: #07091d;
   color: #e0e0e0;
   min-height: 100vh;
   display: flex;
@@ -109,7 +109,7 @@ footer {
 }
 
 .subtitle {
-  color: #777;
+  color: #d9d8e5;
   font-size: 0.9rem;
 }
 
@@ -173,7 +173,7 @@ footer {
   background: #0a0a0f;
   border-radius: 8px;
   font-size: 0.8rem;
-  color: #555;
+  color: #d9d8e5;
   border: 1px solid #1a1a1a;
   line-height: 1.8;
 }
@@ -208,7 +208,7 @@ footer {
 
 .session-info h2 {
   font-size: 1rem;
-  color: #aaa;
+  color: #d9d8e5;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -257,7 +257,7 @@ footer {
   color: #bbb;
 }
 
-.portal-content ul {
+.portal-content ul {s
   list-style: none;
   display: flex;
   flex-direction: column;

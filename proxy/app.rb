@@ -33,8 +33,7 @@ conn = Faraday.new(proxy: proxy_url) do |f|
 end
 
 # Realizar una petición GET a través del proxy
-# Cambiar la URL ('http://example.com') según sea necesario
-response = conn.get('http://example.com')
+response = conn.get('http://localhost')
 
 # Imprimir el cuerpo de la respuesta
 puts response.body
