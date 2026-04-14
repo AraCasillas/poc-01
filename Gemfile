@@ -26,3 +26,7 @@ gem "jwt"
 gem "rack-session"
 gem "rackup"
 
+ # cliente HTTP — hace peticiones a otros servidores
+gem "faraday" 
+
+
