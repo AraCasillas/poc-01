@@ -19,8 +19,3 @@ If you have any issue, let me know and I'll work to fix it.
 - [ ] Attacker dashboard 
 - [x] Add an ignore file for the db and token 
 - [ ] Add json file with token and secret 
-
-
-
-
-
