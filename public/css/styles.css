@@ -288,3 +288,127 @@ footer {
   background: #e74c3c;
   color: white;
 }
+
+
+/* ================================
+   ATTACKER PANEL
+   ================================ */
+.attacker-header {
+  border-bottom-color: #00ff88;
+}
+
+.attacker-header .logo {
+  color: #00ff88;
+}
+
+.attacker-badge {
+  font-size: 0.75rem;
+  color: #555;
+  border: 1px solid #333;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+}
+
+.attacker-dashboard {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.attacker-header-info {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #222;
+}
+
+.attacker-header-info h1 {
+  color: #00ff88;
+  margin-bottom: 0.3rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #555;
+  border: 1px dashed #333;
+  border-radius: 12px;
+}
+
+.credential-card {
+  background: #12121a;
+  border: 1px solid #222;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.credential-header {
+  background: #0d1117;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #222;
+}
+
+.victim-email {
+  color: #00ff88;
+  font-weight: bold;
+}
+
+.captured-time {
+  color: #555;
+  font-size: 0.85rem;
+}
+
+.credential-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.credential-row,
+.payload-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.label {
+  min-width: 130px;
+  font-size: 0.8rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-top: 0.1rem;
+}
+
+.value {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #aaa;
+  word-break: break-all;
+}
+
+.value.token,
+.value.cookie {
+  color: #00ff88;
+  font-size: 0.75rem;
+}
+
+.jwt-payload {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #0a0a0f;
+  border-radius: 8px;
+  border: 1px solid #1a3a2a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.jwt-payload h4 {
+  color: #00ff88;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}

