@@ -1,4 +1,4 @@
 # config_attacker.ru
-require_relative "attacker/app"
+require_relative "app"
 
 run AvatarAttacker

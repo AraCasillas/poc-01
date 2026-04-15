@@ -4,6 +4,8 @@ This project is a proof of concept (POC) demonstrating an Adversary-in-the-Middl
 
 The project is built using Ruby and the Sinatra web framework, with components for the IdP simulation, the AiTM proxy, and an attacker dashboard.
 
+<br><br>
+
 
 <img src="https://i.pinimg.com/736x/fa/b7/37/fab7379fbf5ba04a9fe2cd72da46c4a3.jpg?width=770&height=578&fit=crop&format=pjpg&auto=webp" alt="img" align="right" width="400px"> <br><br>
 
@@ -117,12 +119,9 @@ This is a proof of concept for educational purposes only. It demonstrates vulner
 - [x] Ignore file for database and tokens
 - [x] JSON configuration for tokens and secrets
 - [x] Comprehensive documentation (this file)
+- [ ] Fix proxy -> Attacker danshboard information sending issue
 - [ ] Unit tests
 - [ ] Docker containerization
-
-## Contributing
-
-If you encounter issues or have suggestions, please report them. This project is maintained by Areia.
 
 ## License
 
