@@ -79,7 +79,8 @@ class AvatarProxy < Sinatra::Base
     puts "Proxy: IdP response status: #{idp_response.code}"
     puts "Proxy: IdP response headers: #{idp_response.to_hash}"
 
-    if idp_response.code == "302"
+    # Treat any 3xx response as a redirect from the IdP (302, 303, etc.)
+    if idp_response.code.start_with?("3")
       location       = idp_response['location']
       token          = location.match(/token=(.+)/)[1] rescue nil
       raw_cookie     = idp_response['set-cookie']
