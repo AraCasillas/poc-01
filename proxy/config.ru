@@ -1,3 +1,3 @@
-require_relative "proxy/app"
+require_relative "app"
 
 run AvatarProxy

