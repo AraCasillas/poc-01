@@ -1,15 +1,17 @@
-# Proxy as an intermediary [Proof of concept]
+# ✦•┈๑⋅⋯ 𝐏𝐎𝐂-𝐀𝐢𝐓𝐌 ⋯⋅๑┈•✦
+
+<img src="https://i.pinimg.com/1200x/4d/6b/d3/4d6bd38e850925dbc2ff1ca106377edd.jpg?width=770&height=578&fit=crop&format=pjpg&auto=webp" alt="img" align="right" width="400px"> <br><br>
+
+
 
 This project is a proof of concept (POC) demonstrating an Adversary-in-the-Middle (AiTM) attack. It simulates a phishing scenario where an attacker uses a proxy to intercept user credentials between a victim and a legitimate Identity Provider (IdP), such as Microsoft authentication services. The POC highlights how easily such attacks can be executed using modern deployment tools like Railway or Coolify, combined with minimal technical knowledge and AI-assisted configuration.
 
 The project is built using Ruby and the Sinatra web framework, with components for the IdP simulation, the AiTM proxy, and an attacker dashboard.
 
-<br><br>
 
+<br><br><br>
 
-<img src="https://i.pinimg.com/736x/fa/b7/37/fab7379fbf5ba04a9fe2cd72da46c4a3.jpg?width=770&height=578&fit=crop&format=pjpg&auto=webp" alt="img" align="right" width="400px"> <br><br>
-
-## Components
+##  【𝑪𝒐𝒎𝒑𝒐𝒏𝒆𝒏𝒕𝒔】
 
 ### 1. Identity Provider (IdP) - `idp/`
 
@@ -39,7 +41,7 @@ The project is built using Ruby and the Sinatra web framework, with components f
   - Shows validity of tokens.
 - **Database**: Reads from the shared `captured_credentials.db`.
 
-## Setup and Installation
+## 【𝑺𝒆𝒕𝒖𝒑 𝒂𝒏𝒅 𝑰𝒏𝒔𝒕𝒂𝒍𝒍𝒂𝒕𝒊𝒐𝒏】
 
 ### Prerequisites
 
@@ -47,7 +49,7 @@ The project is built using Ruby and the Sinatra web framework, with components f
 - Bundler (for gem management)
 - SQLite3
 
-### Installation Steps
+### 【𝑰𝒏𝒔𝒕𝒂𝒍𝒍𝒂𝒕𝒊𝒐𝒏 𝑺𝒕𝒆𝒑𝒔】
 
 1. Clone the repository.
 2. Navigate to the project directory.
@@ -62,7 +64,7 @@ The project is built using Ruby and the Sinatra web framework, with components f
    - `PROXY_URL`: URL for the proxy server (default: `http://localhost:4445`)
 5. Ensure `token.json` files are present in `idp/` and `attacker/` directories with JWT secrets.
 
-### Running the Application
+### 【𝑹𝒖𝒏𝒏𝒊𝒏𝒈 𝒕𝒉𝒆 𝑨𝒑𝒑𝒍𝒊𝒄𝒂𝒕𝒊𝒐𝒏】
 
 1. Start the IdP server:
 
@@ -85,22 +87,13 @@ The project is built using Ruby and the Sinatra web framework, with components f
    rackup config.ru -p 4446
    ```
 
-### Usage
+### 【𝑼𝒔𝒂𝒈𝒆】
 
 - Access the proxy at `http://localhost:4445/login` to simulate the phishing page.
 - Victims enter credentials, which are captured by the proxy.
 - Attackers view captured data at `http://localhost:4446`.
 
-## Security Considerations
-
-This is a proof of concept for educational purposes only. It demonstrates vulnerabilities in authentication flows and should not be used for malicious activities. In a real-world scenario:
-
-- Always use HTTPS.
-- Implement proper input validation and sanitization.
-- Store secrets securely (e.g., via environment variables, not files).
-- Regularly update dependencies to patch security vulnerabilities.
-
-## Dependencies
+## 【𝑫𝒆𝒑𝒆𝒏𝒅𝒆𝒏𝒄𝒊𝒆𝒔】
 
 - Sinatra: Web framework
 - Puma: HTTP server
@@ -110,19 +103,3 @@ This is a proof of concept for educational purposes only. It demonstrates vulner
 - Faraday: HTTP client
 - Rack-Session: Session management
 - Dotenv: Environment variable loading
-
-## Roadmap
-
-- [x] Target page
-- [x] Enhance proxy realism
-- [x] Attacker dashboard
-- [x] Ignore file for database and tokens
-- [x] JSON configuration for tokens and secrets
-- [x] Comprehensive documentation (this file)
-- [ ] Fix proxy -> Attacker danshboard information sending issue
-- [ ] Unit tests
-- [ ] Docker containerization
-
-## License
-
-This project is for educational purposes. Use responsibly.
