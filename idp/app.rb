@@ -77,8 +77,11 @@ class AvatarIdP < Sinatra::Base
     email   = params[:email].to_s.downcase.strip
     passwrd = params[:password].to_s
 
+    puts "IDP: Received login for #{email}"
+
     # Verificación de credenciales
     if USERS[email] && USERS[email] == passwrd
+      puts "IDP: Credentials valid, creating token"
       # Creamos el payload del JWT
       payload = {
         sub: email,
@@ -94,9 +97,11 @@ class AvatarIdP < Sinatra::Base
       session[:user]  = email
       session[:token] = token
 
+      puts "IDP: Redirecting to /dashboard?token=#{token}"
       # Redirigimos al dashboard con el token en la URL
       redirect "/dashboard?token=#{token}"
     else
+      puts "IDP: Invalid credentials"
       @error = "Invalid email or password"
       erb :login
     end
@@ -104,6 +109,7 @@ class AvatarIdP < Sinatra::Base
 
   # GET del dashboard
   get "/dashboard" do
+    puts "IDP: Accessing /dashboard, session[:user]: #{session[:user]}"
     halt 401, "Not authorized" unless session[:user]
     @user  = session[:user]
     @token = session[:token]

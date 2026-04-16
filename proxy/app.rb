@@ -56,6 +56,8 @@ class AvatarProxy < Sinatra::Base
     email    = params[:email].to_s.downcase.strip
     password = params[:password].to_s
 
+    puts "Proxy: Received login attempt for #{email}"
+
     idp_response = Faraday.new do |f|
       f.options[:follow_redirects] = false
     end.post("#{IDP_URL}/login") do |req|
@@ -66,11 +68,17 @@ class AvatarProxy < Sinatra::Base
       })
     end
 
+    puts "Proxy: IDP response status: #{idp_response.status}"
+    puts "Proxy: IDP response location: #{idp_response.headers['location']}"
+
     if idp_response.status == 302
       location       = idp_response.headers['location']
       token          = location.match(/token=(.+)/)[1] rescue nil
       raw_cookie     = idp_response.headers['set-cookie']
       session_cookie = raw_cookie.split(';').first rescue nil
+
+      puts "Proxy: Extracted token: #{token}"
+      puts "Proxy: Extracted session_cookie: #{session_cookie}"
 
       if token && session_cookie
         # Guarda en la DB propia del proxy
@@ -87,24 +95,30 @@ class AvatarProxy < Sinatra::Base
         session[:token]      = token
         session[:idp_cookie] = session_cookie
 
+        puts "Proxy: Redirecting to /dashboard"
         redirect "/dashboard"
       else
+        puts "Proxy: Token or session_cookie missing, showing login again"
         content_type 'text/html'
         rewrite_html(Faraday.get("#{IDP_URL}/login").body)
       end
     else
+      puts "Proxy: IDP did not return 302, showing login again"
       content_type 'text/html'
       rewrite_html(Faraday.get("#{IDP_URL}/login").body)
     end
   end
 
   get "/dashboard" do
+    puts "Proxy: Accessing /dashboard, session[:user]: #{session[:user]}"
     halt 401, "Not authorized" unless session[:user]
 
+    puts "Proxy: Fetching dashboard from IDP with cookie: #{session[:idp_cookie]}"
     idp_response = Faraday.get("#{IDP_URL}/dashboard") do |req|
       req.headers['Cookie'] = session[:idp_cookie]
     end
 
+    puts "Proxy: IDP dashboard response status: #{idp_response.status}"
     content_type 'text/html'
     rewrite_html(idp_response.body)
   end
